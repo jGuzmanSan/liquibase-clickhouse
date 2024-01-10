@@ -67,22 +67,26 @@
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <clickhouse-jdbc.version>0.3.2</clickhouse-jdbc.version>
+        <clickhouse-jdbc.version>0.5.0</clickhouse-jdbc.version>
         <liquibase.version>4.15.0</liquibase.version>
         <junit.version>5.4.0</junit.version>
-        <test-containers.version>1.17.3</test-containers.version>
+        <test-containers.version>1.19.3</test-containers.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <maven-plugin-plugin.version>3.6.0</maven-plugin-plugin.version>
         <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
         <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
-        <maven-shade-plugin.version>3.2.0</maven-shade-plugin.version>
+        <maven-shade-plugin.version>3.4.1</maven-shade-plugin.version>
         <fmt-maven-plugin.version>2.9.1</fmt-maven-plugin.version>
         <impsort-maven-plugin.version>1.4.1</impsort-maven-plugin.version>
-        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+        <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
         <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <snakeyaml.version>1.28</snakeyaml.version>
         <typesafe-config.version>1.4.1</typesafe-config.version>
+        <logback-classic.version>1.4.14</logback-classic.version>
+        <lz4-java.version>1.8.0</lz4-java.version>
+        <httpclient5.version>5.2.3</httpclient5.version>
+        <clickhouse-http-client.version>0.5.0</clickhouse-http-client.version>
     </properties>
 
     <dependencies>
@@ -90,6 +94,16 @@
             <groupId>com.clickhouse</groupId>
             <artifactId>clickhouse-jdbc</artifactId>
             <version>${clickhouse-jdbc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.clickhouse</groupId>
+            <artifactId>clickhouse-http-client</artifactId>
+            <version>${clickhouse-http-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>${httpclient5.version}</version>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
@@ -113,6 +127,20 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${test-containers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-classic.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.lz4/lz4-java -->
+        <dependency>
+            <groupId>org.lz4</groupId>
+            <artifactId>lz4-java</artifactId>
+            <version>${lz4-java.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -226,24 +254,6 @@
                         <configuration>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>shaded</shadedClassifierName>
-                            <relocations>
-                                <relocation>
-                                    <pattern>com.</pattern>
-                                    <shadedPattern>shaded.liquibase.com.</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>net.</pattern>
-                                    <shadedPattern>shaded.liquibase.net.</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.</pattern>
-                                    <shadedPattern>shaded.liquibase.org.</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>ru.</pattern>
-                                    <shadedPattern>shaded.liquibase.ru.</shadedPattern>
-                                </relocation>
-                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
