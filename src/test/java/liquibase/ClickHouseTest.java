@@ -2,7 +2,7 @@
  * #%L
  * Liquibase extension for Clickhouse
  * %%
- * Copyright (C) 2020 - 2023 Mediarithmics
+ * Copyright (C) 2020 - 2024 Mediarithmics
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,11 @@
  * limitations under the License.
  * #L%
  */
+
 package liquibase;
 
 import java.sql.Connection;
+import java.time.Duration;
 
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -27,7 +29,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.ClickHouseContainer;
+import org.testcontainers.clickhouse.ClickHouseContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.org.apache.commons.io.output.NullWriter;
@@ -37,7 +39,9 @@ public class ClickHouseTest {
 
   @Container
   private static ClickHouseContainer clickHouseContainer =
-      new ClickHouseContainer("clickhouse/clickhouse-server:22.3.8.39");
+      new ClickHouseContainer("clickhouse/clickhouse-server:23.4.2")
+          .withStartupAttempts(2)
+          .withStartupTimeout(Duration.ofSeconds(10));
 
   @Test
   void canInitializeLiquibaseSchema() {
@@ -115,6 +119,7 @@ public class ClickHouseTest {
       Connection connection = clickHouseContainer.createConnection("");
       JdbcConnection jdbcConnection = new JdbcConnection(connection);
       Database database = dbFactory.findCorrectDatabaseImplementation(jdbcConnection);
+      database.setDefaultSchemaName("default");
       Liquibase liquibase = new Liquibase(changelog, resourceAccessor, database);
       liquibaseAction.accept(liquibase, database);
     } catch (Exception e) {
